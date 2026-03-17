@@ -116,7 +116,7 @@ def train_model():
     accuracy_history = nn.train(
         X_train,
         y_train,
-        epochs=1000000,
+        epochs=1000,
         lr=0.01,
         X_test=X_test,
         y_test=y_test
@@ -158,6 +158,9 @@ def home():
     return f"""
     <h1>Apple Quality Neural Network</h1>
 
+    <h2>Gráfica de Accuracy</h2>
+    <img src="/static/accuracy.png" width="600">
+
     <h2>Resultado del modelo</h2>
     <p><b>Accuracy:</b> {accuracy}</p>
 
@@ -169,9 +172,6 @@ def home():
 
     <h2>Distribución de calidad</h2>
     {eda_quality}
-
-    <h2>Gráfica de Accuracy</h2>
-    <img src="/static/accuracy.png" width="600">
 
     <h2>Arquitectura de la red neuronal</h2>
     <p>
