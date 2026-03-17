@@ -68,26 +68,41 @@ def train_model():
     # EJECUTAR EDA
     eda_head, eda_stats, eda_quality = create_eda(df)
 
-    # PREPARAR DATOS (Tratar de ajustar correctamenta el 80/20)
+    # PREPARAR DATOS 80/20
+    # Separar variables de entrada (X) y variable objetivo (y)
+    # X contiene todas las características de las manzanas
+    # y contiene la calidad (0 = bad, 1 = good)
     X = df.drop("Quality", axis=1).values.tolist()
     y = df["Quality"].tolist()
 
+    # Unimos X - y en una sola estructura
+    # Esto facilita mezclar los datos sin perder la relación entre entrada y salida
     data = list(zip(X, y))
 
+    # Mezclamos los datos aleatoriamente
+    # Esto evita que el modelo aprenda patrones incorrectos por el orden del dataset
     random.seed(42)
     random.shuffle(data)
 
+    # Calculamos el punto de división para el 80% de los datos
+    # Se utilizará para separar entrenamiento y prueba
     split = int(len(data) * 0.8)
 
+    # Dividimos los datos:
+    # 80% para entrenamiento
+    # 20% para evaluación (prueba)
     train = data[:split]
     test = data[split:]
 
-    X_train = [d[0] for d in train]
-    y_train = [d[1] for d in train]
+    # Separamos nuevamente las entradas (X) y salidas (y) para entrenamiento
+    X_train = [d[0] for d in train] # Características 
+    y_train = [d[1] for d in train] # Etiquetas 
 
+    # Separamos entradas y salidas para prueba
     X_test = [d[0] for d in test]
     y_test = [d[1] for d in test]
 
+    # Mostramos información en consola para verificar la correcta división
     print(f"Total datos: {len(data)}")
     print(f"Train size: {len(X_train)}")
     print(f"Test size: {len(X_test)}")
