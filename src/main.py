@@ -17,6 +17,9 @@ from neural_network import NeuralNetwork
 # importar el análisis exploratorio
 from eda import create_eda
 
+# importar función para graficar el accuracy
+from plot import plot_accuracy
+
 
 # CREAR APP WEB
 app = Flask(__name__)
@@ -46,6 +49,16 @@ def train_model():
 
     df = df.dropna()
 
+    # NORMALIZACIÓN DE DATOS
+    for col in df.columns:
+        if col != "Quality":
+            min_val = df[col].min()
+            max_val = df[col].max()
+            if max_val - min_val != 0:
+                df[col] = (df[col] - min_val) / (max_val - min_val)
+
+    
+
     # convertir calidad a números
     df["Quality"] = df["Quality"].map({
         "good": 1,
@@ -61,6 +74,7 @@ def train_model():
 
     data = list(zip(X, y))
 
+    random.seed(42)
     random.shuffle(data)
 
     split = int(len(data) * 0.8)
@@ -73,6 +87,10 @@ def train_model():
 
     X_test = [d[0] for d in test]
     y_test = [d[1] for d in test]
+
+    print(f"Total datos: {len(data)}")
+    print(f"Train size: {len(X_train)}")
+    print(f"Test size: {len(X_test)}")
 
     # CREAR RED NEURONAL
     # input_size representa cuántas características tiene cada manzana
@@ -95,7 +113,16 @@ def train_model():
     # y_train → respuestas correctas
     # epochs → número de veces que el modelo verá todo el dataset
     # lr → learning rate (tasa de aprendizaje)
-    nn.train(X_train, y_train, epochs=1000, lr=0.01)
+    accuracy_history = nn.train(
+        X_train,
+        y_train,
+        epochs=1000000,
+        lr=0.01,
+        X_test=X_test,
+        y_test=y_test
+    )
+
+    plot_accuracy(accuracy_history)
 
     # EVALUACIÓN
     # Variable para contar cuántas predicciones del modelo fueron correctas
@@ -122,9 +149,7 @@ def train_model():
     # Este valor indica qué tan bien funciona la red neuronal
     return accuracy
 
-
-# ENTRENAR MODELO
-accuracy = train_model()
+accuracy = None
 
 # PÁGINA WEB
 @app.route("/")
@@ -145,8 +170,8 @@ def home():
     <h2>Distribución de calidad</h2>
     {eda_quality}
 
-    <h2>Relación entre Sweetness y Quality</h2>
-    <img src="/static/sweetness_vs_quality.png" width="600">
+    <h2>Gráfica de Accuracy</h2>
+    <img src="/static/accuracy.png" width="600">
 
     <h2>Arquitectura de la red neuronal</h2>
     <p>
@@ -162,6 +187,9 @@ def home():
 
 # EJECUTAR SERVIDOR
 if __name__ == "__main__":
+
+    accuracy = train_model()
+
 
     port = int(os.environ.get("PORT", 5000))
 

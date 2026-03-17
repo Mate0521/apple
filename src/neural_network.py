@@ -81,9 +81,12 @@ class NeuralNetwork:
         # output -> predicción final de la red
         return hidden, output
 
-
     # ENTRENAMIENTO (BACKPROPAGATION)
-    def train(self, X, y, epochs, lr):
+    def train(self, X, y, epochs, lr, X_test=None, y_test=None):
+
+        # Lista donde guardaremos el accuracy en cada epoch
+        # Esto permitirá graficar el comportamiento del modelo
+        accuracy_history = []
 
         # Repetimos el entrenamiento varias veces
         # Cada repetición completa sobre todos los datos se llama "epoch"
@@ -98,34 +101,62 @@ class NeuralNetwork:
                 # hidden -> valores de la capa oculta
                 # output -> predicción final de la red
                 hidden, output = self.forward(x)
-           
-                # Calculamos la diferencia entre el valor real
-                # y la predicción de la red neuronal
+
+
+                # Diferencia entre el valor real y la predicción
+                # Este error indica qué tan lejos está la red de la respuesta correcta
                 error = y_true - output
 
                 # Derivada de la función sigmoide
-                # Esto indica qué tanto debe cambiar la salida
+                # Permite saber cómo ajustar la salida
+                # Teóricamente: gradiente del error respecto a la salida
                 d_output = error * sigmoid_derivative(output)
 
-                # Ajustamos los pesos que conectan la capa oculta con la salida
+                # Ajustamos los pesos de la capa oculta → salida
                 for j in range(self.hidden_size):
 
-                    # Regla de actualización:
-                    # peso = peso + (learning_rate * gradiente * valor_neurona_oculta)
+                    # Regla de actualización (Gradient Descent):
+                    # w = w + (learning_rate * gradiente * activación)
                     self.w2[j] += lr * d_output * hidden[j]
 
-                # ACTUALIZACIÓN PESOS
-                # ENTRADA → CAPA OCULTA
+
+                # Ajustamos los pesos de entrada → capa oculta
                 for i in range(self.input_size):
 
                     for j in range(self.hidden_size):
 
-                        # Calculamos el gradiente para la neurona oculta
-                        # usando backpropagation
+                        # Gradiente de la neurona oculta
+                        # Se propaga el error hacia atrás (backpropagation)
                         d_hidden = d_output * self.w2[j] * sigmoid_derivative(hidden[j])
 
-                        # Ajustamos el peso correspondiente
+                        # Actualización del peso
                         self.w1[i][j] += lr * d_hidden * x[i]
+
+            # Solo calculamos accuracy si se proporcionan datos de test
+            if X_test is not None and y_test is not None:
+
+                correct = 0
+
+                # Evaluamos el modelo con datos no vistos
+                for x_val, y_val in zip(X_test, y_test):
+
+                    pred = self.predict(x_val)
+
+                    # Contamos predicciones correctas
+                    if pred == y_val:
+                        correct += 1
+
+                # Accuracy = aciertos / total
+                accuracy = correct / len(X_test)
+
+                # Guardamos el valor para la gráfica
+                accuracy_history.append(accuracy)
+
+                # (Opcional) imprimir progreso
+                print(f"Epoch {epoch+1}/{epochs} - Accuracy: {accuracy:.4f}")
+
+        # Retornamos el historial completo
+        return accuracy_history
 
     # PREDICCIÓN
     def predict(self, x):

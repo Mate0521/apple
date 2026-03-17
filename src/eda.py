@@ -27,24 +27,5 @@ def create_eda(df):
     # to_frame() convierte el resultado en una tabla
     quality = df["Quality"].value_counts().to_frame().to_html()
 
-    # HIPÓTESIS
-    """
-    Hipótesis:
-    Las manzanas con mayor nivel de dulzura
-    tienden a tener mejor calidad.
-    """
-
-    # GRÁFICA (Prueba)
-    sns.boxplot(x="Quality", y="Sweetness", data=df)
-
-    plt.title("Relación entre Sweetness y Quality")
-
-    plt.xlabel("Calidad")
-
-    plt.ylabel("Nivel de dulzura")
-
-    plt.savefig("src/static/sweetness_vs_quality.png")
-
-    plt.clf()
 
     return head, stats, quality
