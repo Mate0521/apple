@@ -153,7 +153,7 @@ class NeuralNetwork:
                 accuracy_history.append(accuracy)
 
                 # (Opcional) imprimir progreso
-                #print(f"Epoch {epoch+1}/{epochs} - Accuracy: {accuracy:.4f}")
+                print(f"Epoch {epoch+1}/{epochs} - Accuracy: {accuracy:.4f}")
 
         # Retornamos el historial completo
         return accuracy_history

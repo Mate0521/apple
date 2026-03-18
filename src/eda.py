@@ -27,7 +27,7 @@ def create_eda(df):
 
 
 
-# 1. KDE (Distribución suave)
+# 1. KDE 
     plt.figure()
     sns.kdeplot(data=df, x="Size", hue="Quality", fill=True)
     plt.title("Densidad de Size por Quality")
@@ -48,7 +48,7 @@ def create_eda(df):
     plt.savefig("src/static/scatter_weight_size.png")
     plt.close()
 
-    # 4. Promedios por clase (MUY IMPORTANTE)
+    # 4. Promedios por clase 
     plt.figure()
     df.groupby("Quality").mean().plot(kind="bar")
     plt.title("Promedio de variables por Quality")

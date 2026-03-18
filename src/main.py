@@ -158,7 +158,6 @@ def train_model():
         if prediction == y_true:
             correct += 1
 
-    #(Tratar de demostrar el accuracy ya sea por una grafica o un metodo de qeu es correcto)
     # Calculamos el accuracy del modelo
     # accuracy = predicciones correctas / total de datos evaluados
     accuracy = correct / len(X_test)
