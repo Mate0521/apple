@@ -188,16 +188,162 @@ def home():
     <h2>Distribución de calidad</h2>
     {eda_quality}
 
+    <h2>📊 Análisis Exploratorio de Datos (EDA)</h2>
+
+    <h3>1. Densidad de Size</h3>
+    <img src="/static/kde_size.png" width="500">
+    <p>
+    Esta gráfica muestra la distribución del tamaño de las manzanas según su calidad.
+    Se observa que las manzanas buenas tienden a tener mayor tamaño, aunque existe superposición.
+    </p>
+
+    <h3>2. Distribución de Sweetness</h3>
+    <img src="/static/hist_sweetness_norm.png" width="500">
+    <p>
+    Se analiza la dulzura de las manzanas de forma normalizada.
+    Permite comparar proporciones reales entre clases sin depender de la cantidad de datos.
+    </p>
+
+    <h3>3. Relación Weight vs Size</h3>
+    <img src="/static/scatter_weight_size.png" width="500">
+    <p>
+    Muestra la relación entre peso y tamaño.
+    No hay una separación clara entre clases, lo que indica que se necesitan múltiples variables.
+    </p>
+
+    <h3>4. Promedio de variables por Quality</h3>
+    <img src="/static/mean_variables.png" width="500">
+    <p>
+    Permite comparar los valores promedio de cada variable entre manzanas buenas y malas.
+    Ayuda a identificar cuáles características influyen más en la calidad.
+    </p>
+
+    <h3>5. Correlación entre variables</h3>
+    <img src="/static/correlation.png" width="500">
+    <p>
+    El mapa de calor muestra la relación entre variables.
+    Permite identificar cuáles tienen mayor influencia sobre la calidad.
+    </p>
+
+    <h2>🤓 Conclusión</h2>
+    <p>
+    Teniendo en cuenta los datos analizados se puede concluir que no existe un punto de 
+    comparación único y específico que pueda determinar en su totalidad si una manzana es 
+    buena o mala, se puede observar que para obtener el resultado deseado hay que tener en 
+    cuenta muchas variables y relacionarlas entre sí tal como se muestra en los gráficos. 
+    En su mayoría se puede decir que si una manzana es grande, con altos grados de dulzura y 
+    jugosidad, y bajo grado de madurez, podría estar en el intervalo de ser una buena manzana.
+    </p>
+
+
     <h2>Arquitectura de la red neuronal</h2>
     <p>
     Entradas → Capa oculta (6 neuronas) → Salida (1 neurona)
     </p>
 
     <h2>Algoritmo</h2>
+
     <p>
-    Se utilizó Backpropagation para entrenar la red neuronal
-    ajustando los pesos según el error de predicción.
+    Se implementó una red neuronal entrenada con el algoritmo de <b>Backpropagation</b>, el cual ajusta los pesos de la red en función del error de predicción.
     </p>
+
+    <h3>1. Función de activación (Sigmoid)</h3>
+
+    <pre>
+    def sigmoid(x):
+        return 1 / (1 + math.exp(-x))
+    </pre>
+
+    <p>
+    Esta función transforma cualquier valor en un rango entre 0 y 1, lo que permite interpretar la salida como una probabilidad en un problema de clasificación binaria.
+    </p>
+
+    <h3>2. Inicialización de pesos</h3>
+
+    <pre>
+    self.w1 = [[random.uniform(-1,1) for _ in range(hidden_size)]
+            for _ in range(input_size)]
+
+    self.w2 = [random.uniform(-1,1) for _ in range(hidden_size)]
+    </pre>
+
+    <p>
+    Los pesos se inicializan aleatoriamente para que la red comience a aprender desde cero. 
+    w1 conecta la capa de entrada con la capa oculta, mientras que w2 conecta la capa oculta con la salida.
+    </p>
+
+    <h3>3. Propagación hacia adelante (Forward)</h3>
+
+    <pre>
+    s += x[i] * self.w1[i][j]
+    hidden.append(sigmoid(s))
+    </pre>
+
+    <p>
+    Cada entrada se multiplica por su peso correspondiente y se suma. Luego se aplica la función sigmoide para obtener la activación de cada neurona en la capa oculta.
+    </p>
+
+    <pre>
+    s += hidden[j] * self.w2[j]
+    output = sigmoid(s)
+    </pre>
+
+    <p>
+    Las salidas de la capa oculta se combinan para generar la salida final de la red, que representa la probabilidad de la clase.
+    </p>
+
+    <h3>4. Cálculo del error</h3>
+
+    <pre>
+    error = y_true - output
+    </pre>
+
+    <p>
+    Se calcula la diferencia entre el valor real y la predicción del modelo. Este error indica qué tan precisa fue la predicción.
+    </p>
+
+    <h3>5. Backpropagation</h3>
+
+    <pre>
+    d_output = error * sigmoid_derivative(output)
+    </pre>
+
+    <p>
+    Se calcula el gradiente del error utilizando la derivada de la función sigmoide, lo que permite determinar cómo ajustar los pesos.
+    </p>
+
+    <h3>6. Actualización de pesos</h3>
+
+    <pre>
+    self.w2[j] += lr * d_output * hidden[j]
+    </pre>
+
+    <p>
+    Se ajustan los pesos entre la capa oculta y la salida en función del error y la contribución de cada neurona.
+    </p>
+
+    <pre>
+    d_hidden = d_output * self.w2[j] * sigmoid_derivative(hidden[j])
+    self.w1[i][j] += lr * d_hidden * x[i]
+    </pre>
+
+    <p>
+    Se propaga el error hacia atrás y se ajustan los pesos entre la capa de entrada y la capa oculta.
+    </p>
+
+    <h3>7. Predicción</h3>
+
+    <pre>
+    if output >= 0.5:
+        return 1
+    else:
+        return 0
+    </pre>
+
+    <p>
+    Se define una regla de decisión: si la probabilidad es mayor o igual a 0.5, se clasifica como "buena calidad", de lo contrario como "mala calidad".
+    </p>
+
     """
 
 # EJECUTAR SERVIDOR
