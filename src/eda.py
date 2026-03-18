@@ -5,8 +5,6 @@
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
-os.makedirs("src/static", exist_ok=True)
 
 
 # FUNCIÓN DE ANÁLISIS EXPLORATORIO

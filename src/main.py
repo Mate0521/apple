@@ -18,7 +18,7 @@ from neural_network import NeuralNetwork
 from eda import create_eda
 
 # importar función para graficar el accuracy
-from plot import plot_accuracy
+from plot import plot_accuracy, plot_architecture
 
 
 # CREAR APP WEB
@@ -119,6 +119,9 @@ def train_model():
     # Creamos la red neuronal usando la clase NeuralNetwork
     # Se le pasa el número de entradas y el número de neuronas ocultas
     nn = NeuralNetwork(input_size, hidden_size)
+
+    # Se crea el diagrama de la arquitectura de la red neuronal
+    plot_architecture(input_size, hidden_size)
 
     # Mensaje informativo para indicar que el entrenamiento comienza
     print("Entrenando red neuronal...")
@@ -237,9 +240,7 @@ def home():
 
 
     <h2>Arquitectura de la red neuronal</h2>
-    <p>
-    Entradas → Capa oculta (6 neuronas) → Salida (1 neurona)
-    </p>
+    <img src="/static/architecture.png" width="600">
 
     <h2>Algoritmo</h2>
 
@@ -349,8 +350,9 @@ def home():
 # EJECUTAR SERVIDOR
 if __name__ == "__main__":
 
-    accuracy = train_model()
+    os.makedirs("src/static", exist_ok=True)
 
+    accuracy = train_model()
 
     port = int(os.environ.get("PORT", 5000))
 
